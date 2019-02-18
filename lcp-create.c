@@ -4,7 +4,7 @@
 static inline int min(int a, int b) {
     return a < b ? a : b;
 }
-
+//linear time lcp from sa with kasai's algorithm 
 // Lcp[i] = lcp(i, i-1)
 // rank is SA^-1
 static void lcp_kasai(const char* text, const int* sa, unsigned int* lcp, const unsigned int n){

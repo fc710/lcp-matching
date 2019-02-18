@@ -86,7 +86,6 @@ sa_search_1(const char* text, const int* sa, const unsigned int n,
 
 //Implementation of sa_search_2 from sa-matching with lcp_lr
 //this is actually accelerant 3
-//and a couple of bugfix
 static unsigned int
 sa_search_2_1(const char* text, const int* sa, const unsigned int n,
         const unsigned int* llcp,const unsigned int* rlcp,
@@ -103,20 +102,20 @@ sa_search_2_1(const char* text, const int* sa, const unsigned int n,
     unsigned int l = lcp2(text + sa[lp], pattern, m);
     unsigned int r = lcp2(text + sa[rp], pattern, m);
     unsigned int mp = 0;
-    /*unsigned int
+	//test function
+    unsigned int
         lcp_t(const unsigned int p1, const unsigned int p2) {
             return lcp2(text + sa[p1], text + sa[p2], m);
         }
-*/
     while (lp < rp - 1) {
         mp = lp + (rp - lp) / 2;
         //printf("lp: %d, mp: %d, rp: %d, l: %d, r: %d\n",lp, mp, rp, l, r);
         if (l > r)
             if (llcp[mp] > l) {
-                //printf("lcp(l,m) > l %d, lcp[lp,mp]: %d\n",llcp[mp],lcp_t(lp,mp));
+				// printf("lcp(l,m) > l %d, lcp[lp,mp]: %d\n",llcp[mp],lcp_t(lp,mp));
                 lp = mp;
             } else if (llcp[mp] < l) {
-                //printf("lcp(l,m) < l %d, lcp[lp,mp]: %d\n",llcp[mp],lcp_t(lp,mp));
+				// printf("lcp(l,m) < l %d, lcp[lp,mp]: %d\n",llcp[mp],lcp_t(lp,mp));
                 rp = mp;
                 //r += lcp2(text + sa[rp] + r, pattern + r, min(m - r, n - r));
                 r = llcp[mp];
@@ -131,7 +130,7 @@ sa_search_2_1(const char* text, const int* sa, const unsigned int n,
                 }
                 if (cmp < 0) {
                     rp = mp;
-                    r += lcp2(text + sa[mp] + l, pattern + l, min(m - l, n - l));
+                    r += lcp2(text + sa[mp] + r, pattern + r, min(m - r, n - r));
                 } else {
                     lp = mp;
                     l += lcp2(text + sa[mp] + l, pattern + l, min(m - l, n - l));
@@ -139,20 +138,20 @@ sa_search_2_1(const char* text, const int* sa, const unsigned int n,
             }
             else if (l < r)
                 if (rlcp[mp] > r) {
-                    //printf("lcp(r,m) > r %d, lcp[rp,mp]: %d\n",rlcp[mp],lcp_t(rp,mp));
+					// printf("lcp(r,m) > r %d, lcp[rp,mp]: %d\n",rlcp[mp],lcp_t(rp,mp));
                     rp = mp;
                 } else if (rlcp[mp] < r) {
-                    //printf("lcp(r,m) < r %d, lcp[rp,mp]: %d\n",rlcp[mp],lcp_t(rp,mp));
+					//  printf("lcp(r,m) < r %d, lcp[rp,mp]: %d\n",rlcp[mp],lcp_t(rp,mp));
                     lp = mp;
                     //l += lcp2(text + sa[lp] + r, pattern + l, min(m - l, n - l));
                     l = rlcp[mp];
                 } else {
                     /* lcp_t(rp, lp) == r */
-                    //printf("lcp(r,m) == r %d, lcp[rp,mp]: %d\n",rlcp[mp],lcp_t(rp,mp));
+					// printf("lcp(r,m) == r %d, lcp[rp,mp]: %d\n",rlcp[mp],lcp_t(rp,mp));
                     int cmp = suffix_cmp(text, sa[mp] + r, n - r, pattern + r, m - r);
                     if (cmp == 0) {
                         found = mp;
-                        //printf("lp: %d, mp: %d, rp: %d\n",lp,mp,rp);
+						//   printf("lp: %d, mp: %d, rp: %d\n",lp,mp,rp);
                         break;
                     }
                     if (cmp < 0) {
@@ -160,15 +159,15 @@ sa_search_2_1(const char* text, const int* sa, const unsigned int n,
                         r += lcp2(text + sa[mp] + r, pattern + r, min(m - r, n - r));
                     } else {
                         lp = mp;
-                        l += lcp2(text + sa[mp] + r, pattern + r, min(m - r, n - r));
+                        l += lcp2(text + sa[mp] + l, pattern + l, min(m - l, n - l));
                     }
                 }
                 else {
-                    //printf("l==r lcp(l,m) == l %d, lcp[lp,mp]: %d, lcp(lp,rp) %d\n",llcp[mp],lcp_t(lp,mp), lcp_t(lp,rp));
+					// printf("l==r lcp(l,m) == l %d, lcp[lp,mp]: %d, lcp(lp,rp) %d\n",llcp[mp],lcp_t(lp,mp), lcp_t(lp,rp));
                     int cmp = suffix_cmp(text, sa[mp] + l, n - l, pattern + l, m - l);
                     if (cmp == 0) {
                         found = mp;
-                        //printf("lp: %d, mp: %d, rp: %d\n",lp,mp,rp);
+						//  printf("lp: %d, mp: %d, rp: %d\n",lp,mp,rp);
                         break;
                     }
                     if (cmp < 0) {
@@ -185,7 +184,7 @@ sa_search_2_1(const char* text, const int* sa, const unsigned int n,
         if (suffix_cmp(text, sa[lp], n, pattern, m) == 0) found = lp;
         if (suffix_cmp(text, sa[rp], n, pattern, m) == 0) found = rp;
     }
-    //printf("lp: %d, mp: %d, rp: %d\n",lp,mp,rp);
+	// printf("lp: %d, mp: %d, rp: %d\n",lp,mp,rp);
     return found;
 }
 //Same algorithm as sa_search_2_1, from Manber/Myers 'Suffix arrays: a new
