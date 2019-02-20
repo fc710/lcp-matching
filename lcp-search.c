@@ -252,7 +252,7 @@ sa_search_3_1(const char* text, const int* sa, const unsigned int n,
 	  because -llcp/rlcp have all the info)
 	  It basically scans the bst where every node is identified by a triple (l, m, r).
 	  Because only m is known, it needs to scan from root until a leaf is found
-	  then evaluates the lower and upper bounds
+	  then evaluates the lower 'pp' and upper bounds 'rr'
 	*/
 
 void find_all_occurrences(unsigned int found, uint32_t n, uint32_t m,
@@ -448,9 +448,8 @@ int main(int argc, char** argv){
         }
         */
 
-
+	free(text);
 	free(sa);
-    //free(lcp);
     free(rlcp);
     free(llcp);
 

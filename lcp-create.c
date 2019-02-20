@@ -92,12 +92,17 @@ int main(int argc, char** argv){
     lcp = 0;
     FILE *write_ptr;
     write_ptr = fopen(no_ext,"wb");
+	if(write_ptr == NULL) {
+		perror("Failed: ");
+		exit(EXIT_FAILURE);
+	}
     fwrite(sa, sizeof(*sa),n, write_ptr);
     //fwrite(lcp, sizeof(*lcp),n, write_ptr);
     fwrite(llcp, sizeof(*llcp),n, write_ptr);
     fwrite(rlcp, sizeof(*rlcp),n, write_ptr);
     fclose(write_ptr);
     printf("File written successfully\n");
+	free(text);
     free(sa);
     free(llcp);
     free(rlcp);
