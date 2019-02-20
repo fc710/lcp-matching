@@ -96,10 +96,19 @@ int main(int argc, char** argv){
 		perror("Failed: ");
 		exit(EXIT_FAILURE);
 	}
-    fwrite(sa, sizeof(*sa),n, write_ptr);
+    if(fwrite(sa, sizeof(*sa),n, write_ptr) != n){
+		perror("Failed to write Suffix array: ");
+		exit(EXIT_FAILURE);
+	}
     //fwrite(lcp, sizeof(*lcp),n, write_ptr);
-    fwrite(llcp, sizeof(*llcp),n, write_ptr);
-    fwrite(rlcp, sizeof(*rlcp),n, write_ptr);
+    if(fwrite(llcp, sizeof(*llcp),n, write_ptr) != n){
+		perror("Failed to write Llcp array: ");
+		exit(EXIT_FAILURE);
+	}
+    if(fwrite(rlcp, sizeof(*rlcp),n, write_ptr) != n){
+		perror("Failed to wrtite Rlcp array: ");
+		exit(EXIT_FAILURE);
+	}
     fclose(write_ptr);
     printf("File written successfully\n");
 	free(text);

@@ -102,11 +102,12 @@ sa_search_2_1(const char* text, const int* sa, const unsigned int n,
     unsigned int l = lcp2(text + sa[lp], pattern, m);
     unsigned int r = lcp2(text + sa[rp], pattern, m);
     unsigned int mp = 0;
-	//test function
+	/*print test function
     unsigned int
         lcp_t(const unsigned int p1, const unsigned int p2) {
             return lcp2(text + sa[p1], text + sa[p2], m);
         }
+	*/
     while (lp < rp - 1) {
         mp = lp + (rp - lp) / 2;
         //printf("lp: %d, mp: %d, rp: %d, l: %d, r: %d\n",lp, mp, rp, l, r);
@@ -269,7 +270,7 @@ void find_all_occurrences(unsigned int found, uint32_t n, uint32_t m,
             --p;
         while(p > 0 && pp >= 0){
             //printf("p: %d\n", p);
-            unsigned int llp = 0, rlp = n-1, mlp=(llp+rlp)/2;
+            unsigned int llp = 0, rlp = n-1, mlp = llp + (rlp - llp) / 2;
             while( p != mlp){
                 while(p < mlp){
                     rlp = mlp;
@@ -313,7 +314,7 @@ void find_all_occurrences(unsigned int found, uint32_t n, uint32_t m,
             --r;
         while(r < n-1){
             //   printf("r: %d\n", r);
-            unsigned int llp = 0, rlp = n-1, mlp=(llp+rlp)/2;
+            unsigned int llp = 0, rlp = n-1, mlp = llp + (rlp - llp) / 2;
             while(r != mlp){
                 while(r < mlp){
                     //printf("Ent.. r <\n");
@@ -392,10 +393,19 @@ int main(int argc, char** argv){
     //unsigned int* lcp = malloc (n* sizeof(*lcp));
     unsigned int* llcp = malloc (n* sizeof(*llcp));
     unsigned int* rlcp = malloc (n* sizeof(*rlcp));
-    fread(sa, sizeof(*sa),n,read_ptr);
+    if(fread(sa, sizeof(*sa),n,read_ptr) != n){
+		perror("Failed to read Suffix array: ");
+		exit(EXIT_FAILURE);
+	}
     //fread(lcp, sizeof(*lcp),n,read_ptr);
-    fread(llcp, sizeof(*llcp),n,read_ptr);
-    fread(rlcp, sizeof(*rlcp),n,read_ptr);
+    if(fread(llcp, sizeof(*llcp),n,read_ptr) != n){
+		perror("Failed to read Llcp array: ");
+		exit(EXIT_FAILURE);
+	}
+    if(fread(rlcp, sizeof(*rlcp),n,read_ptr) != n){
+		perror("Failed to read Rlcp array: ");
+		exit(EXIT_FAILURE);
+	}
     /*
        printf("---sa---\n");
        for(int i=0; i<n;++i)
@@ -447,7 +457,6 @@ int main(int argc, char** argv){
         //	 printf("rp %d: %d\n",rp,lcp[rp]);
         }
         */
-
 	free(text);
 	free(sa);
     free(rlcp);
